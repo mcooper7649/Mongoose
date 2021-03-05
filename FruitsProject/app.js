@@ -1,10 +1,17 @@
 const mongoose = require('mongoose');
 
-mongoose.connect("mongodb://localhost:27017/peopleDB", { useNewUrlParser: true, useUnifiedTopology: true });   //make sure your connnection to the correct DB
+mongoose.connect("mongodb://localhost:27017/fruitsDB", { useNewUrlParser: true, useUnifiedTopology: true });   //make sure your connnection to the correct DB
 
 const fruitSchema = new mongoose.Schema({
-  name: String,
-  rating: Number,
+  name: {
+    type: String,
+    required: [true, "Please check your data entry, no name specified"]
+  },
+  rating: {
+    type: Number,
+    min: 1,
+    max: 10
+  },
   review: String
 });
 
@@ -19,30 +26,68 @@ const Person = mongoose.model("Person", personSchema)
 
 
 const fruit = new Fruit({  
-  name: "Apple",
-  rating: "7",
-  review: "Pretty Solid as a fruit."
+  name: "Peach",
+  rating: "5",
+  review: "Peaches are yummy."
 })
 
-const person = new Person({  
-  name: "John",
-  age: 37
-})
+// const grapes = new Fruit({  
+//   name: "Grapes",
+//   rating: "9",
+//   review: "I love Wine."
+// })
+
+// const watermelon = new Fruit({  
+//   name: "Watermelon",
+//   rating: "3",
+//   review: "Quenches your thirst."
+// })
+
+// const person = new Person({  
+//   name: "John",
+//   age: 37
+// })
+
+
+// apple.save()
+// grapes.save()
+// watermelon.save()
 
 // fruit.save()
-person.save()
+// person.save()
 
 
+// Fruit.updateOne({_id: "60411ea8cf6ccf28621e8612"},{name: "Banana"}, function(err){
+//   if (err){
+//       console.log(err)
+//   } else {
+//       console.log("Sucessfully Updated!")
+//   }
+// })
 
-
-  const findDocuments = function(db, callback) {
-    // Get the documents collection
-    const collection = db.collection('fruitDB');
-    // Find some documents
-    collection.find({}).toArray(function(err, fruit) {
-      assert.equal(err, null);
-      console.log("Found the following records");
-      console.log(fruit)
-      callback(fruit);
-    });
+Fruit.deleteOne({ _id: '6042726542c4f835d03d0941' }, function (err) {
+  if (err){
+    return handleError(err, "Unsuccessful Deletion");
+  } else {
+    console.log("Successfully Deleted")
   }
+  // deleted at most one tank document
+});
+
+
+Fruit.find(function(err, fruits){
+  if(err){
+      console.log(err);
+  }else{
+
+      mongoose.connection.close();
+
+      fruits.forEach(fruit => {
+        console.log(fruit.name)
+      });
+  }
+})   
+
+
+
+
